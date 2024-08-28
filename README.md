@@ -13,7 +13,7 @@ where `DISCORD_TOKEN` is created using the Discord Developer system.
 
 ## Supported commands 
 
-- !ping
-- !bytie
+- /ping
+- /bytie
 
 
