@@ -1,68 +1,115 @@
-use std::env;
-
+use fal_rust::{
+    client::{ClientCredentials, FalClient},
+    utils::download_image,
+};
 use serenity::async_trait;
+use serenity::builder::{CreateAttachment, CreateMessage};
 use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
 use serenity::prelude::*;
+use std::env;
 
-struct Handler;
+struct Handler {
+    fal_client: FalClient,
+}
 
 #[async_trait]
 impl EventHandler for Handler {
-    // Set a handler for the `message` event. This is called whenever a new message is received.
-    //
-    // Event handlers are dispatched through a threadpool, and so multiple events can be
-    // dispatched simultaneously.
     async fn message(&self, ctx: Context, msg: Message) {
-        match msg.content.as_str() {
-            "!ping" => {
-                // Sending a message can fail, due to a network error, an authentication error, or lack
-                // of permissions to post in the channel, so log to stdout when some error happens,
-                // with a description of it.
-                if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
-                    println!("Error sending message: {why:?}");
+        if msg.content.starts_with("!imagine ") {
+            let prompt = msg.content.trim_start_matches("!imagine ").to_string();
+            if let Err(why) = msg.channel_id.say(&ctx.http, "Generating image...").await {
+                println!("Error sending message: {:?}", why);
+                return;
+            }
+            match self.generate_image(&prompt).await {
+                Ok(filename) => {
+                    let attachment = CreateAttachment::path(&filename).await;
+                    if let Err(why) = attachment {
+                        println!("Error creating attachment: {:?}", why);
+                        return;
+                    }
+                    let attachment = attachment.unwrap();
+
+                    let message = CreateMessage::default().add_file(attachment);
+                    if let Err(why) = msg.channel_id.send_message(&ctx.http, message).await {
+                        println!("Error sending message: {:?}", why);
+                    }
+
                 }
-            },
-            "!bytie" => {
-                if let Err(why) = msg.channel_id.say(&ctx.http, "Hey, I am the Rust version of the Bytie bot, originally created as a Python bot during the worldwide COVID-19 pandemic.").await {
-                    println!("Error sending message: {why:?}");
+                Err(e) => {
+                    if let Err(why) = msg
+                        .channel_id
+                        .say(&ctx.http, format!("Error generating image: {}", e))
+                        .await
+                    {
+                        println!("Error sending error message: {:?}", why);
+                    }
                 }
-            },
-            _ => {}
-            
+            }
+        } else {
+            match msg.content.as_str() {
+                "!ping" => {
+                    if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
+                        println!("Error sending message: {:?}", why);
+                    }
+                },
+                "!bytie" => {
+                    if let Err(why) = msg.channel_id.say(&ctx.http, "Hey, I am the Rust version of the Bytie bot, originally created as a Python bot during the worldwide COVID-19 pandemic.").await {
+                        println!("Error sending message: {:?}", why);
+                    }
+                },
+                _ => {}
+            }
         }
-        
     }
 
-    // Set a handler to be called on the `ready` event. This is called when a shard is booted, and
-    // a READY payload is sent by Discord. This payload contains data like the current user's guild
-    // Ids, current user data, private channels, and more.
-    //
-    // In this case, just print what the current user's username is.
     async fn ready(&self, _: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
     }
 }
 
+impl Handler {
+    async fn generate_image(&self, prompt: &str) -> Result<String, String> {
+        let res = self
+            .fal_client
+            .run(
+                "fal-ai/flux/dev",
+                serde_json::json!({
+                    "prompt": prompt,
+                }),
+            )
+            .await
+            .map_err(|e| format!("Fal AI error: {:?}", e))?;
+        let output: serde_json::Value = res
+            .json()
+            .await
+            .map_err(|e| format!("JSON parsing error: {:?}", e))?;
+        let url = output["images"][0]["url"]
+            .as_str()
+            .ok_or_else(|| "Failed to get image URL".to_string())?;
+        let filename = url.split('/').last().unwrap_or("generated_image.png");
+        let path = format!("images/{}", filename);
+        download_image(url, &path)
+            .await
+            .map_err(|e| format!("Download error: {:?}", e))?;
+        Ok(path)
+    }
+}
+
 #[tokio::main]
 async fn main() {
-    // Configure the client with your Discord bot token in the environment.
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
-    // Set gateway intents, which decides what events the bot will be notified about
     let intents = GatewayIntents::GUILD_MESSAGES
         | GatewayIntents::DIRECT_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT;
+    let fal_client = FalClient::new(ClientCredentials::from_env());
+    let mut client = Client::builder(&token, intents)
+        .event_handler(Handler { fal_client })
+        .await
+        .expect("Err creating client");
 
-    // Create a new instance of the Client, logging in as a bot. This will automatically prepend
-    // your bot token with "Bot ", which is a requirement by Discord for bot users.
-    let mut client =
-        Client::builder(&token, intents).event_handler(Handler).await.expect("Err creating client");
-
-    // Finally, start a single shard, and start listening to events.
-    //
-    // Shards will automatically attempt to reconnect, and will perform exponential backoff until
-    // it reconnects.
     if let Err(why) = client.start().await {
-        println!("Client error: {why:?}");
+        println!("Client error: {:?}", why);
     }
 }

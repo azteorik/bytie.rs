@@ -9,11 +9,10 @@ In terminal, type
 # DISCORD_TOKEN=..... cargo run
 ```
 
-where `DISCORD_TOKEN` is created using the Discord Developer system. 
+where `DISCORD_TOKEN` is created using the Discord Developer system.
 
-## Supported commands 
+## Supported commands
 
 - !ping
 - !bytie
-
-
+- !imagine
