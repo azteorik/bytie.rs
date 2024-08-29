@@ -1,11 +1,8 @@
 use poise::serenity_prelude as serenity;
 
-pub mod usdtry;
-
-struct Data {} // User data, which is stored and accessible in all command invocations
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Data, Error>;
-
+mod context;
+use crate::context::{Context, Data, Error};
+mod usdtry;
 
 /// Responds with the USD/TRY parity
 #[poise::command(slash_command)]
