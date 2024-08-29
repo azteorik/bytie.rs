@@ -6,7 +6,22 @@ struct StockInfo {
     price: f64,
     low: f64,
     high: f64,
+    currency_symbol: String,
 }
+
+fn currency_symbol(currency: &str) -> String {
+    match currency {
+        "USD" => "$",
+        "EUR" => "€",
+        "TRY" => "₺",
+        "GBP" => "£",
+        "JPY" => "¥",
+        "CNY" => "¥",
+        _ => "",
+    }
+    .to_string()
+}
+
 
 /// Get stock information
 #[poise::command(slash_command)]
@@ -17,8 +32,14 @@ pub async fn stock(
     match fetch_stock_info(&symbol).await {
         Ok(info) => {
             ctx.say(format!(
-                "{}:\nPrice: ${:.2}\nDaily Low: ${:.2}\nDaily High: ${:.2}",
-                symbol, info.price, info.low, info.high
+                "{}:\nPrice: {}{:.2}\nDaily Low: {}{:.2}\nDaily High: {}{:.2}",
+                symbol,
+                info.currency_symbol,
+                info.price,
+                info.currency_symbol,
+                info.low,
+                info.currency_symbol,
+                info.high
             ))
             .await?;
         }
@@ -57,6 +78,12 @@ async fn fetch_stock_info(symbol: &str) -> Result<StockInfo, Error> {
     let price = quote["regularMarketPrice"].as_f64().unwrap_or(0.0);
     let low = quote["regularMarketDayLow"].as_f64().unwrap_or(0.0);
     let high = quote["regularMarketDayHigh"].as_f64().unwrap_or(0.0);
-
-    Ok(StockInfo { price, low, high })
+    let currency = quote["currency"].as_str().unwrap_or("USD").to_string();
+    let currency_symbol = currency_symbol(&currency);
+    Ok(StockInfo {
+        price,
+        low,
+        high,
+        currency_symbol,
+    })
 }
