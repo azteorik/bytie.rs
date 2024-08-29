@@ -4,6 +4,7 @@ mod context;
 use crate::context::{Context, Data, Error};
 mod usdtry;
 mod stock;
+mod xkcd;
 
 /// Responds with the USD/TRY parity
 #[poise::command(slash_command)]
@@ -35,7 +36,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![ping(), bytie(), usdtry(), stock::stock()], // Add the commands to the framework
+            commands: vec![ping(), bytie(), usdtry(), stock::stock(), xkcd::xkcd()], // Add the commands to the framework
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
