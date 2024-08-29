@@ -1,3 +1,14 @@
+use crate::context::{Context, Error};
+
+/// Responds with the USD/TRY parity
+#[poise::command(slash_command)]
+pub async fn usdtry(ctx: Context<'_>) -> Result<(), Error> {
+    let parity = get_usd_try().await;
+    let buy = parity.get(0).unwrap();
+    let sell = parity.get(1).unwrap();
+    ctx.say(format!("{buy} - {sell}")).await?;
+    Ok(())
+}
 
 pub async fn get_usd_try() -> Vec<String> {
     let mut parity = Vec::new();
