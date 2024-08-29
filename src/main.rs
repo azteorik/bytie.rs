@@ -4,8 +4,10 @@ mod context;
 use crate::context::Data;
 mod usdtry;
 mod stock;
+mod xkcd;
 mod ping;
 mod bytie;
+
 
 
 #[tokio::main]
@@ -14,7 +16,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![ping::ping(), bytie::bytie(), usdtry::usdtry(), stock::stock()], // Add the commands to the framework
+            commands: vec![ping::ping(), bytie::bytie(), usdtry::usdtry(), stock::stock(), xkcd::xkcd()], // Add the commands to the framework
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
