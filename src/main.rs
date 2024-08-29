@@ -1,8 +1,20 @@
 use poise::serenity_prelude as serenity;
 
+pub mod usdtry;
+
 struct Data {} // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
+
+
+/// Responds with the USD/TRY parity
+#[poise::command(slash_command)]
+async fn usdtry(ctx: Context<'_>) -> Result<(), Error> {
+    let parity = usdtry::get_usd_try().await;
+    ctx.say(parity.get(0).unwrap()).await?;
+    Ok(())
+}
+
 
 /// Responds with "Pong"
 #[poise::command(slash_command)]
@@ -24,7 +36,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![ping(), bytie()], // Add the commands to the framework
+            commands: vec![ping(), bytie(), usdtry()], // Add the commands to the framework
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
