@@ -11,7 +11,9 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 #[poise::command(slash_command)]
 async fn usdtry(ctx: Context<'_>) -> Result<(), Error> {
     let parity = usdtry::get_usd_try().await;
-    ctx.say(parity.get(0).unwrap()).await?;
+    let buy = parity.get(0).unwrap();
+    let sell = parity.get(1).unwrap();
+    ctx.say(format!("{buy} - {sell}")).await?;
     Ok(())
 }
 
