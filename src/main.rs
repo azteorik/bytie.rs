@@ -1,11 +1,9 @@
 use poise::serenity_prelude as serenity;
 
-pub mod usdtry;
-
-struct Data {} // User data, which is stored and accessible in all command invocations
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Data, Error>;
-
+mod context;
+use crate::context::{Context, Data, Error};
+mod usdtry;
+mod stock;
 
 /// Responds with the USD/TRY parity
 #[poise::command(slash_command)]
@@ -16,7 +14,6 @@ async fn usdtry(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(format!("{buy} - {sell}")).await?;
     Ok(())
 }
-
 
 /// Responds with "Pong"
 #[poise::command(slash_command)]
@@ -38,7 +35,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![ping(), bytie(), usdtry()], // Add the commands to the framework
+            commands: vec![ping(), bytie(), usdtry(), stock::stock()], // Add the commands to the framework
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
