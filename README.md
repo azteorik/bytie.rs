@@ -6,10 +6,10 @@ Bytie the Discord Bot but in Rust
 In terminal, type
 
 ```bash
-# DISCORD_TOKEN=..... cargo run
+# DISCORD_TOKEN=..... FAL_API_KEY=..... cargo run
 ```
 
-where `DISCORD_TOKEN` is created using the Discord Developer system. 
+where `DISCORD_TOKEN` is created using the Discord Developer system, FAL_API_KEY is required for the `/imagine` functionality.
 
 ## Supported commands 
 
