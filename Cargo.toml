@@ -4,9 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+fal-rust = "0.1.1"
 poise = "0.6.1"
 reqwest = "0.12.7"
 scraper = "0.20.0"
+serde = "1.0.209"
 serde_json = "1.0.127"
 tokio = {version = "1.39.3", features = ["full"]}
 tulisp = "0.17.0"
