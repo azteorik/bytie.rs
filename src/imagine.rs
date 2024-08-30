@@ -30,9 +30,14 @@ pub async fn imagine(
 ) -> Result<(), Error> {
     ctx.defer().await?;
     let image_url = fetch_image_url(&prompt).await?;
+    let title = if prompt.len() > 256 {
+        format!("{}...", &prompt[..253])
+    } else {
+        prompt.clone()
+    };
     let reply = poise::CreateReply::default()
         .content(String::new())
-        .embed(serenity::CreateEmbed::new().title(prompt).image(image_url));
+        .embed(serenity::CreateEmbed::new().title(title).image(image_url));
     ctx.send(reply).await?;
     Ok(())
 }
