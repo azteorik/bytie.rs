@@ -3,6 +3,7 @@ use poise::serenity_prelude as serenity;
 mod context;
 use crate::context::Data;
 mod bytie;
+mod imagine;
 mod lisp;
 mod ping;
 mod stock;
@@ -22,6 +23,7 @@ async fn main() {
                 stock::stock(),
                 xkcd::xkcd(),
                 lisp::lisp(),
+                imagine::imagine(),
             ], // Add the commands to the framework
             ..Default::default()
         })
