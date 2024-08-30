@@ -17,4 +17,5 @@ where `DISCORD_TOKEN` is created using the Discord Developer system.
 - /bytie
 - /usdtry
 - /stock STOCKCODE
+- /xkcd COMICID
 - /lisp CODE
