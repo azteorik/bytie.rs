@@ -10,6 +10,7 @@ mod ping;
 mod stock;
 mod usdtry;
 mod xkcd;
+mod collatz;
 
 #[tokio::main]
 async fn main() {
@@ -26,6 +27,7 @@ async fn main() {
                 lisp::lisp(),
                 imagine::imagine(),
                 dice::dice(),
+                collatz::collatz(),
             ], // Add the commands to the framework
             ..Default::default()
         })
