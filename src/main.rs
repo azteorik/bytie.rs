@@ -11,6 +11,7 @@ mod stock;
 mod usdtry;
 mod xkcd;
 mod collatz;
+mod latex;
 
 #[tokio::main]
 async fn main() {
@@ -28,6 +29,7 @@ async fn main() {
                 imagine::imagine(),
                 dice::dice(),
                 collatz::collatz(),
+                latex::latex(),
             ], // Add the commands to the framework
             ..Default::default()
         })

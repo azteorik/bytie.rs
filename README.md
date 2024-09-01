@@ -22,4 +22,5 @@ where `DISCORD_TOKEN` is created using the Discord Developer system, FAL_API_KEY
 - /imagine PROMPT
 - /dice
 - /collatz N
+- /latex FORMULA
 
