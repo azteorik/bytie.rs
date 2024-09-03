@@ -3,15 +3,16 @@ use poise::serenity_prelude as serenity;
 mod context;
 use crate::context::Data;
 mod bytie;
+mod collatz;
 mod dice;
+mod fft;
 mod imagine;
+mod latex;
 mod lisp;
 mod ping;
 mod stock;
 mod usdtry;
 mod xkcd;
-mod collatz;
-mod latex;
 
 #[tokio::main]
 async fn main() {
@@ -30,6 +31,7 @@ async fn main() {
                 dice::dice(),
                 collatz::collatz(),
                 latex::latex(),
+                fft::fft(),
             ], // Add the commands to the framework
             ..Default::default()
         })
