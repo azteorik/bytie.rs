@@ -2,6 +2,7 @@ use poise::serenity_prelude as serenity;
 
 mod context;
 use crate::context::Data;
+mod brainfuck;
 mod bytie;
 mod collatz;
 mod dice;
@@ -32,6 +33,7 @@ async fn main() {
                 collatz::collatz(),
                 latex::latex(),
                 fft::fft(),
+                brainfuck::brainfuck(),
             ], // Add the commands to the framework
             ..Default::default()
         })
