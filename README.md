@@ -1,5 +1,8 @@
 # bytie.rs
+
 Bytie the Discord Bot but in Rust
+
+![bytie-logo](images/bytie-logo.png)
 
 # Usage
 
