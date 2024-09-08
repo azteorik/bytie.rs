@@ -10,6 +10,7 @@ mod fft;
 mod imagine;
 mod latex;
 mod lisp;
+mod pgsays;
 mod ping;
 mod stock;
 mod usdtry;
@@ -34,6 +35,7 @@ async fn main() {
                 latex::latex(),
                 fft::fft(),
                 brainfuck::brainfuck(),
+                pgsays::pgsays()
             ], // Add the commands to the framework
             ..Default::default()
         })
