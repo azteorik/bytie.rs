@@ -1,5 +1,4 @@
 use crate::context::{Context, Error};
-use poise::serenity_prelude as serenity;
 use rand::prelude::*;
 use regex::Regex;
 use reqwest;
