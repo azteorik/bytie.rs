@@ -15,6 +15,7 @@ mod ping;
 mod stock;
 mod usdtry;
 mod xkcd;
+mod trend;
 
 #[tokio::main]
 async fn main() {
@@ -35,7 +36,8 @@ async fn main() {
                 latex::latex(),
                 fft::fft(),
                 brainfuck::brainfuck(),
-                pgsays::pgsays()
+                pgsays::pgsays(),
+                trend::trend()
             ], // Add the commands to the framework
             ..Default::default()
         })
