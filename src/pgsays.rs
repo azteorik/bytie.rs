@@ -47,7 +47,7 @@ async fn find_random_essay() -> Result<PGEssay, EssayError> {
         })
         .collect();
 
-    essay_links.choose(&mut thread_rng())
+    essay_links.choose(&mut rand::rng())
         .map(|(link, title)| PGEssay { link: format!("{}/{}", BASE_URL, link.clone()), title: title.clone(), content: None })
         .ok_or(EssayError::NoEssaysFound)
 }
@@ -75,7 +75,7 @@ fn get_random_sentence(essay: &PGEssay) -> Result<String, EssayError> {
         .map(|m| m.as_str())
         .collect();
 
-    sentences.choose(&mut thread_rng())
+    sentences.choose(&mut rand::rng())
         .map(|&sentence| sentence.replace('\n', " "))
         .ok_or(EssayError::NoSentencesFound)
 }
